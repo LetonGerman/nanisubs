@@ -1,7 +1,7 @@
 <template>
   <div>
  <div class="pepes">
-  <img class="pepe" v-for="(pepe, index) in images" v-bind:key="index" v-bind:src="pepe">
+  <img class="pepe" v-for="(pepe, index) in images" v-bind:key="index" v-bind:src="pepe" alt="a sub pepe drawing">
    <p>{{ pepe }}</p>
  </div>
   </div>
