@@ -1,13 +1,14 @@
 <template>
   <div>
  <div class="pepes">
-  <img class="pepe" v-for="(pepe, index) in images" v-bind:key="index" v-bind:src="pepe" alt="a sub pepe drawing">
-   <p>{{ pepe }}</p>
+  <img class="pepe" v-for="n in 24" v-bind:key="n" v-bind:src="'http://lorempixel.com/500/500/sports/' + (n % 10)" alt="a sub pepe drawing">
+   <p>{{ n }}</p>
  </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'Gallery',
   data: function () {
@@ -32,5 +33,8 @@ export default {
 
   .pepe {
     flex: 0 0 25%;
+  }
+  img {
+    size: 100px;
   }
 </style>
