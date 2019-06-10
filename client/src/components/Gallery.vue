@@ -14,13 +14,13 @@
 
 <script>
 export default {
-  name: "Gallery",
-  data: function() {
+  name: 'Gallery',
+  data: function () {
     return {
-      publicPath: process.env.BASE_URL,
-    };
+      publicPath: process.env.BASE_URL
+    }
   }
-};
+}
 </script>
 
 <style scoped>
