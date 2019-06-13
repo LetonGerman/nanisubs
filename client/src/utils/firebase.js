@@ -1,20 +1,12 @@
-import { firebase } from 'firebase'
+import firebaseConfig from './firebaseConfig'
+import firebase from 'firebase/app'
+import storage from 'firebase/storage'
+import firestore from 'firebase/firestore'
 
-const firebaseConfig = {
-  apiKey: 'apiKey',
-  authDomain: 'authDomain',
-  databaseURL: 'databaseURL',
-  projectId: 'projectId',
-  storageBucket: 'storageBucket',
-  messagingSenderId: 'messagingSenderId',
-  appId: 'appId'
-}
 firebase.initializeApp(firebaseConfig)
 
 export const db = firebase.firestore()
 
-export const storage = firebase.storage()
+export const fireStorage = firebase.storage()
 
-db.settings({ timestampsInSnapshots: true })
-
-export default firebase.firestore
+export default firebase;
