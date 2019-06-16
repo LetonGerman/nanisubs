@@ -95,7 +95,9 @@ export default {
             .map(file => ({
               src: window.URL.createObjectURL(file),
               name: file.name,
-              fileBlob: file
+              fileBlob: file,
+              progress: null,
+              tempId: Date.now().toString(32).substring(2)
             }))
         ];
         // notify parent cmp that files have changed
