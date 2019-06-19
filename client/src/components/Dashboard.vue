@@ -1,15 +1,12 @@
 <template>
-  <div class="wrapper">
-    <div class="pepes">
-      <div class="pepe-wrapper" v-for="pepe in pepes" :key="pepe.name">{{ pepe.name }}</div>
-      <pepe-upload-form></pepe-upload-form>
-    </div>
-  </div>
+  <v-layout class="pepes">
+    <pepe-upload-form></pepe-upload-form>
+  </v-layout>
 </template>
 
 <script>
 import { db } from "../utils/firebase";
-import PepeUploadForm from '@/components/PepeUploadForm.vue'
+import PepeUploadForm from "@/components/PepeUploadForm.vue";
 export default {
   name: "Dashboard",
   components: {
@@ -22,7 +19,7 @@ export default {
   },
   firestore: {
     pepes: db.collection("pepes")
-  },
+  }
 };
 </script>
 
