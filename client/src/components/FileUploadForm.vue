@@ -30,7 +30,7 @@
               <v-layout row wrap>
                 <v-flex xs6 sm4 md3 v-for="(file, i) in files" :key="i">
                   <v-card tile>
-                    <v-img :src="file.src" height="100%" max-height="100px"></v-img>
+                    <v-img :src="file.src" contain height="100%" max-height="100px"></v-img>
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn icon @click="removeFile(file, i)">
@@ -97,6 +97,8 @@ export default {
               name: file.name,
               fileBlob: file,
               progress: null,
+              username: '',
+              description: '',
               tempId: Date.now().toString(32).substring(2)
             }))
         ];

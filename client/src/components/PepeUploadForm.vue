@@ -95,12 +95,12 @@
 </template>
 
 <script>
-import FileUploadForm from "@/components/FileUploadForm.vue";
-import FileDetailForm from "@/components/FileDetailForm.vue";
-import { firebase, fireStorage } from "../utils/firebase";
+import FileUploadForm from '@/components/FileUploadForm.vue'
+import FileDetailForm from '@/components/FileDetailForm.vue'
+import { savePepeFiles, createPepeRecords } from '../utils/pepe'
 
 export default {
-  name: "PepeUploadForm",
+  name: 'PepeUploadForm',
   components: {
     FileUploadForm,
     FileDetailForm
@@ -113,67 +113,30 @@ export default {
   }),
   methods: {
     changeStep(value) {
-      this.step += value;
+      this.step += value
     },
     handleUpdateFiles(files) {
-      this.pepes = [...files];
+      this.pepes = [...files]
     },
     submitForm() {
       this.submitted = true;
-      const uploadPromises = this.pepes.map(pepe => {
-        const task = fireStorage
-          .ref()
-          .child(`pepes/${pepe.name}`)
-          .put(pepe.fileBlob);
-        return task.on(
-          "state_changed",
-          snapshot => updateProgress(snapshot, pepe),
-          error => handleTaskError(error, pepe),
-          () => {
-            task.snapshot.ref.getDownloadURL().then(url => {
-              pepe.fileUrl = url;
-            });
-            return pepe;
-          }
-        );
-      });
-      Promise.all(uploadPromises).then(updatedPepes => {
-        console.log(updatedPepes);
-        console.log(updatedPepes.map(pepe => pepe.fileUrl));
-      });
+      const self = this;
+      savePepeFiles(this.pepes).then(updatedPepes => {
+        self.dialog = false
+        this.$emit('upload-finished', this.pepes)
+      })
     }
   },
   watch: {
     dialog(newDialog, oldDialog) {
       // reset state if dialog with file upload has been closed
       if (!newDialog) {
-        this.pepes = [];
-        this.step = 1;
+        this.pepes = []
+        this.step = 1
+        this.submitted = false
       }
     }
   }
-};
-
-function updateProgress(snapshot, file) {
-  file.progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-  return file;
-}
-
-function handleTaskError(error, pepe) {
-  console.log(error, pepe);
-  switch (error.code) {
-    case "storage/unauthorized":
-      pepe.errorMessage = "You don't have access to upload files";
-      break;
-    case "storage/canceled":
-      pepe.errorMessage = "Upload has been canceled";
-      break;
-    case "storage/unknown":
-      pepe.errorMessage = "Unknown error occured";
-      break;
-  }
-  pepe.hasError = true;
-  return pepe;
 }
 </script>
 
