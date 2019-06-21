@@ -24,24 +24,43 @@
           </v-sheet>
         </v-flex>
         <v-flex xs12 v-if="files.length > 0">
-          <h3 class="heading">Selected Files</h3>
-          <v-layout>
-            <v-flex xs12>
-              <v-layout row wrap>
-                <v-flex xs6 sm4 md3 v-for="(file, i) in files" :key="i">
-                  <v-card tile>
-                    <v-img :src="file.src" contain height="100%" max-height="100px"></v-img>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn icon @click="removeFile(file, i)">
-                        <v-icon>delete</v-icon>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
+          <v-list>
+            <v-subheader>Selected Files</v-subheader>
+            <template v-for="(file, index) in files">
+              <v-list-tile :key="index">
+                <v-flex xs2 sm1 class="mr-4">
+                  <v-img :src="file.src" class="list-item-img"></v-img>
                 </v-flex>
-              </v-layout>
-            </v-flex>
-          </v-layout>
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="file.name"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="file.username"></v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-tooltip bottom v-if="file.hasError">
+                    <template v-slot:activator="{ on }">
+                      <v-icon color="red" v-on="on">warning</v-icon>
+                    </template>
+                    <span>{{file.errorMessage}}</span>
+                  </v-tooltip>
+                  <v-progress-circular
+                    v-else-if="!file.hasError && file.progress !== null"
+                    :rotate="-90"
+                    :size="32"
+                    :value="file.progress"
+                    :color="file.progress === 100 ? 'green' : 'primary'"
+                  >
+                    <span class="caption" v-if="file.progress < 100">{{ file.progress }}%</span>
+                    <v-icon v-else small>check</v-icon>
+                  </v-progress-circular>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                  <v-btn icon @click="removeFile(file, i)" :disabled="file.progress !== null">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+            </template>
+          </v-list>
         </v-flex>
       </v-layout>
     </v-container>
@@ -97,9 +116,11 @@ export default {
               name: file.name,
               fileBlob: file,
               progress: null,
-              username: '',
-              description: '',
-              tempId: Date.now().toString(32).substring(2)
+              username: "",
+              description: "",
+              tempId: Date.now()
+                .toString(32)
+                .substring(2)
             }))
         ];
         // notify parent cmp that files have changed
