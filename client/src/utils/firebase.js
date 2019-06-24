@@ -1,7 +1,7 @@
 import firebaseConfig from './firebaseConfig'
 import firebase from 'firebase/app'
-import storage from 'firebase/storage'
-import firestore from 'firebase/firestore'
+require('firebase/storage')
+require('firebase/firestore')
 
 firebase.initializeApp(firebaseConfig)
 

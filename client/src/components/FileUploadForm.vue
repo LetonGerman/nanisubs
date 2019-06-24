@@ -24,43 +24,14 @@
           </v-sheet>
         </v-flex>
         <v-flex xs12 v-if="files.length > 0">
-          <v-list>
-            <v-subheader>Selected Files</v-subheader>
-            <template v-for="(file, index) in files">
-              <v-list-tile :key="index">
-                <v-flex xs2 sm1 class="mr-4">
-                  <v-img :src="file.src" class="list-item-img"></v-img>
-                </v-flex>
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="file.name"></v-list-tile-title>
-                  <v-list-tile-sub-title v-html="file.username"></v-list-tile-sub-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-tooltip bottom v-if="file.hasError">
-                    <template v-slot:activator="{ on }">
-                      <v-icon color="red" v-on="on">warning</v-icon>
-                    </template>
-                    <span>{{file.errorMessage}}</span>
-                  </v-tooltip>
-                  <v-progress-circular
-                    v-else-if="!file.hasError && file.progress !== null"
-                    :rotate="-90"
-                    :size="32"
-                    :value="file.progress"
-                    :color="file.progress === 100 ? 'green' : 'primary'"
-                  >
-                    <span class="caption" v-if="file.progress < 100">{{ file.progress }}%</span>
-                    <v-icon v-else small>check</v-icon>
-                  </v-progress-circular>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                  <v-btn icon @click="removeFile(file, i)" :disabled="file.progress !== null">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                </v-list-tile-action>
-              </v-list-tile>
-            </template>
-          </v-list>
+          <pepe-list-view
+            :pepes="files"
+            :allowRemove="allowRemove"
+            :showProgress="true"
+            @pepe:remove="removeFile"
+          >
+            <span slot="listHeader">Selected Files</span>
+          </pepe-list-view>
         </v-flex>
       </v-layout>
     </v-container>
@@ -68,67 +39,74 @@
 </template>
 
 <script>
+import PepeListView from '@/components/PepeListView'
 export default {
-  name: "FileUploadForm",
+  name: 'FileUploadForm',
   data: () => ({
     valid: true
   }),
   props: {
     files: {
       type: Array,
-      default: []
+      default: () => []
+    },
+    allowRemove: {
+      type: Boolean,
+      default: true
     }
   },
+  components: {
+    PepeListView
+  },
   methods: {
-    resetForm() {
+    resetForm () {
       // reset form and memory clean up for the object urls
-      this.$refs.filesForm.reset();
+      this.$refs.filesForm.reset()
       for (let file of this.files) {
-        window.URL.revokeObjectURL(file.src);
+        window.URL.revokeObjectURL(file.src)
       }
     },
-    triggerInput() {
+    triggerInput () {
       // trigger the native file selector
-      this.$refs.fileUpload.click();
+      this.$refs.fileUpload.click()
     },
-    removeFile(file, index) {
+    removeFile (file, index) {
       // remove the file and clean up
-      this.files.splice(index, 1);
-      window.URL.revokeObjectURL(file);
+      this.files.splice(index, 1)
+      window.URL.revokeObjectURL(file)
     },
-    handleInputFileChange(event) {
-      let inputFiles;
-      if (event.type === "change") {
+    handleInputFileChange (event) {
+      let inputFiles
+      if (event.type === 'change') {
         // triggered from file selector
-        inputFiles = [...event.target.files];
-      } else if (event.type === "drop") {
+        inputFiles = [...event.target.files]
+      } else if (event.type === 'drop') {
         // triggered by drag & drop
-        inputFiles = [...event.dataTransfer.files];
+        inputFiles = [...event.dataTransfer.files]
       }
       if (inputFiles.length > 0) {
         // concat all files
         const updatedFiles = [
           ...this.files,
           ...inputFiles
-            .filter(file => file.type.startsWith("image/"))
+            .filter(file => file.type.startsWith('image/'))
             .map(file => ({
               src: window.URL.createObjectURL(file),
               name: file.name,
               fileBlob: file,
               progress: null,
-              username: "",
-              description: "",
-              tempId: Date.now()
-                .toString(32)
-                .substring(2)
+              tempId:
+                Math.random()
+                  .toString(36)
+                  .substring(2) + new Date().getTime().toString(36)
             }))
-        ];
+        ]
         // notify parent cmp that files have changed
-        this.$emit("update:files", updatedFiles);
+        this.$emit('update:files', updatedFiles)
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

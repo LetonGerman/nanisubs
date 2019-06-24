@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    dark
     v-model="dialog"
     max-width="50%"
     scrollable
@@ -20,15 +21,15 @@
         <file-upload-form
           ref="pepeForm"
           :files="pepes"
+          :allowRemove="!submitted"
           v-on:update:files="handleUpdateFiles($event)"
         ></file-upload-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn flat @click="dialog = false">Close</v-btn>
         <v-spacer></v-spacer>
         <v-btn
           color="green darken-1"
-          dark
           raised
           @click="submitForm()"
           :disabled="submitted || !this.pepes.length"
@@ -39,11 +40,11 @@
 </template>
 
 <script>
-import FileUploadForm from "@/components/FileUploadForm.vue";
-import { savePepeFiles, createPepeRecords } from "../utils/pepe";
+import FileUploadForm from '@/components/FileUploadForm.vue'
+import { savePepeFiles } from '../utils/pepe'
 
 export default {
-  name: "PepeUploadForm",
+  name: 'PepeUploadForm',
   components: {
     FileUploadForm
   },
@@ -53,41 +54,36 @@ export default {
     pepes: []
   }),
   methods: {
-    changeStep(value) {
-      this.step += value;
+    changeStep (value) {
+      this.step += value
     },
-    handleUpdateFiles(files) {
-      this.pepes = [...files];
+    handleUpdateFiles (files) {
+      this.pepes = [...files]
     },
-    submitForm() {
-      this.submitted = true;
-      const self = this;
+    submitForm () {
+      this.submitted = true
+      const self = this
       savePepeFiles(this.pepes).then(updatedPepes => {
-        self.dialog = false;
-        this.$emit("upload-finished", this.pepes);
-      });
+        self.dialog = false
+        this.$emit('upload-finished', this.pepes)
+      })
     }
   },
   watch: {
-    dialog(newDialog, oldDialog) {
+    dialog (newDialog, oldDialog) {
       // reset state if dialog with file upload has been closed
       if (!newDialog) {
-        this.pepes = [];
-        this.submitted = false;
+        this.pepes = []
+        this.submitted = false
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .btn-add-pepes {
   bottom: 1rem;
   right: 1rem;
-}
-
-.list-item-img {
-  object-fit: contain;
-  width: 100%;
 }
 </style>

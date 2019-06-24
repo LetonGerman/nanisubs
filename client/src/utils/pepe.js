@@ -48,10 +48,9 @@ const savePepeRecord = (task, pepe) => {
       .add({
         name: pepe.name,
         fileName: `${pepe.name}.${pepe.fileBlob.type.split('/').pop()}`,
-        username: pepe.username,
-        description: pepe.description,
-        fileUrl: downloadURL,
-        timestamp: db.Timestamp.now()
+        src: downloadURL,
+        timestamp: db.Timestamp.now(),
+        tempId: pepe.tempId
       })
       .catch(error => handleTaskError({ code: null, message: error }, pepe))
   })
@@ -59,4 +58,8 @@ const savePepeRecord = (task, pepe) => {
 
 export const savePepeFiles = pepes => {
   return Promise.all(pepes.map(pepe => savePepeFile(pepe)))
+}
+
+export const removePepe = (pepe) => {
+  return db.collection('pepes').doc(pepe.id).delete()
 }

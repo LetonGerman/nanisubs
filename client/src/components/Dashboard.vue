@@ -1,64 +1,56 @@
 <template>
-  <v-layout class="pepes" row wrap>
-    <v-flex xs12 sm8 offset-sm2>
-      <v-list dark three-line>
-        <v-subheader>All Pepes</v-subheader>
-        <template v-for="(pepe, index) in pepes">
-          <v-list-tile :key="index">
-            <v-avatar tile size="80" class="mr-3">
-              <v-img :src="pepe.fileUrl" contain class="list-item-img"></v-img>
-            </v-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title v-html="pepe.name"></v-list-tile-title>
-              <v-list-tile-sub-title v-html="pepe.username"></v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-btn icon @click="removepepe(pepe, i)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </template>
-      </v-list>
-    </v-flex>
-    <pepe-upload-form @upload-finished="handleUploadFinished($event)"></pepe-upload-form>
-    <v-snackbar v-model="toast" top color="success" :timeout="5000">
-      {{toastMessage}}
-      <v-btn dark flat @click="toast = false">Close</v-btn>
-    </v-snackbar>
-  </v-layout>
+  <v-container fluid>
+    <v-layout class="pepes" row wrap>
+      <v-flex xs12 sm8 offset-sm2>
+        <pepe-list-view :pepes="pepes" :allowRemove="true" @pepe:remove="removePepe">
+          <span slot="listHeader">All Pepes</span>
+        </pepe-list-view>
+      </v-flex>
+      <pepe-upload-form @upload-finished="handleUploadFinished($event)"></pepe-upload-form>
+      <v-snackbar v-model="toast" top color="success" :timeout="5000">
+        {{toastMessage}}
+        <v-btn dark flat @click="toast = false">Close</v-btn>
+      </v-snackbar>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import { db } from "../utils/firebase";
-import PepeUploadForm from "@/components/PepeUploadForm.vue";
+import { db } from '../utils/firebase'
+import { removePepe } from '../utils/pepe'
+import PepeUploadForm from '@/components/PepeUploadForm'
+import PepeListView from '@/components/PepeListView'
 export default {
-  name: "Dashboard",
+  name: 'Dashboard',
   components: {
-    PepeUploadForm
+    PepeUploadForm,
+    PepeListView
   },
-  data: function() {
+  data: function () {
     return {
       pepes: [],
       toast: false,
-      toastMessage: ""
-    };
+      toastMessage: ''
+    }
   },
   methods: {
-    handleUploadFinished(event) {
-      this.toast = true;
+    handleUploadFinished (event) {
+      this.toast = true
       this.toastMessage = `Successfully uploaded ${event.length} ${
-        event.length === 1 ? "file" : "files"
-      }`;
+        event.length === 1 ? 'file' : 'files'
+      }`
     },
-    removepepe(pepe, index) {
-      this.pepes.splice(index, 1)
+    removePepe (pepe, index) {
+      removePepe(pepe).then(() => {
+        this.toast = true
+        this.toastMessage = 'Successfully removed pepe'
+      })
     }
   },
   firestore: {
-    pepes: db.collection("pepes").orderBy("timestamp", "desc")
+    pepes: db.collection('pepes').orderBy('timestamp', 'desc')
   }
-};
+}
 </script>
 
 <style scoped>
