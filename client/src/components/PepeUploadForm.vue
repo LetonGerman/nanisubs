@@ -8,7 +8,7 @@
     :no-click-animation="true"
   >
     <template v-slot:activator="{ on }">
-      <v-btn color="primary" icon absolute dark fab bottom right v-on="on" class="btn-add-pepes">
+      <v-btn color="primary" icon fixed dark fab bottom right v-on="on" class="btn-add-pepes">
         <v-icon>add</v-icon>
       </v-btn>
     </template>

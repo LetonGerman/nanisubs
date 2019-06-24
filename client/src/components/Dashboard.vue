@@ -1,7 +1,25 @@
 <template>
   <v-layout class="pepes" row wrap>
-    <v-flex md3 sm6 xs12 v-for="pepe of pepes" :key="pepe.id">
-      <v-img  :src="pepe.fileUrl" :key="pepe.id" lazy-src="static/pepe_placeholder.gif"></v-img>
+    <v-flex xs12 sm8 offset-sm2>
+      <v-list dark three-line>
+        <v-subheader>All Pepes</v-subheader>
+        <template v-for="(pepe, index) in pepes">
+          <v-list-tile :key="index">
+            <v-avatar tile size="80" class="mr-3">
+              <v-img :src="pepe.fileUrl" contain class="list-item-img"></v-img>
+            </v-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title v-html="pepe.name"></v-list-tile-title>
+              <v-list-tile-sub-title v-html="pepe.username"></v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon @click="removepepe(pepe, i)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </template>
+      </v-list>
     </v-flex>
     <pepe-upload-form @upload-finished="handleUploadFinished($event)"></pepe-upload-form>
     <v-snackbar v-model="toast" top color="success" :timeout="5000">
@@ -32,10 +50,13 @@ export default {
       this.toastMessage = `Successfully uploaded ${event.length} ${
         event.length === 1 ? "file" : "files"
       }`;
+    },
+    removepepe(pepe, index) {
+      this.pepes.splice(index, 1)
     }
   },
   firestore: {
-    pepes: db.collection("pepes").orderBy('timestamp', "desc")
+    pepes: db.collection("pepes").orderBy("timestamp", "desc")
   }
 };
 </script>

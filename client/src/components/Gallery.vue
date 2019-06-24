@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <div class="pepes">
-      <div class="pepe-wrapper" v-for="n in 24" :key="n">
-        <img
-          class="pepe"
-          :src="'http://lorempixel.com/500/500/sports/' + (n % 10)"
-          alt="a sub pepe drawing"
-        >
-      </div>
-    </div>
-  </div>
+  <v-layout class="pepes" row wrap>
+    <v-flex md3 sm6 xs12 v-for="pepe of pepes" :key="pepe.id">
+      <v-img :src="pepe.fileUrl" :key="pepe.id" lazy-src="static/pepe_placeholder.gif"></v-img>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
+import { db } from '../utils/firebase'
 export default {
-  name: 'Gallery',
-  data: function () {
+  name: "Gallery",
+  data: function() {
     return {
-      publicPath: process.env.BASE_URL
-    }
+      pepes: []
+    };
+  },
+  firestore: {
+    pepes: db.collection("pepes").orderBy("timestamp", "desc")
   }
-}
+};
 </script>
 
 <style scoped>
@@ -32,7 +30,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: center;
 }
 
 .pepe-wrapper {
