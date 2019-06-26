@@ -30,7 +30,9 @@
             :showProgress="true"
             @pepe:remove="removeFile"
           >
-            <span slot="listHeader">Selected Files</span>
+            <v-subheader slot="listHeader">
+              <span>Selected Files</span>
+            </v-subheader>
           </pepe-list-view>
         </v-flex>
       </v-layout>

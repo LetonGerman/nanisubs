@@ -1,8 +1,7 @@
 <template>
   <v-list dark two-line>
-    <v-subheader>
-      <slot name="listHeader"></slot>
-    </v-subheader>
+    <slot name="listHeader">
+    </slot>
     <template v-for="(pepe, index) in pepes">
       <v-list-tile :key="index">
         <v-flex xs8 sm2>

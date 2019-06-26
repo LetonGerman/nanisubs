@@ -2,6 +2,7 @@ import firebaseConfig from './firebaseConfig'
 import firebase from 'firebase/app'
 require('firebase/storage')
 require('firebase/firestore')
+require('firebase/auth')
 
 firebase.initializeApp(firebaseConfig)
 

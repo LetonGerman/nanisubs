@@ -3,10 +3,13 @@
     <v-layout class="pepes" row wrap>
       <v-flex xs12 sm8 offset-sm2>
         <pepe-list-view :pepes="pepes" :allowRemove="true" @pepe:remove="removePepe">
-          <span slot="listHeader">All Pepes</span>
+          <v-subheader slot="listHeader">
+            <span>All Pepes</span>
+            <v-spacer></v-spacer>
+            <pepe-upload-form @upload-finished="handleUploadFinished($event)"></pepe-upload-form>
+          </v-subheader>
         </pepe-list-view>
       </v-flex>
-      <pepe-upload-form @upload-finished="handleUploadFinished($event)"></pepe-upload-form>
       <v-snackbar v-model="toast" top color="success" :timeout="5000">
         {{toastMessage}}
         <v-btn dark flat @click="toast = false">Close</v-btn>

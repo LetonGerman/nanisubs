@@ -42,7 +42,6 @@ const handleTaskError = (error, pepe) => {
 const savePepeRecord = (task, pepe) => {
   return task.snapshot.ref.getDownloadURL().then(downloadURL => {
     pepe.fileUrl = downloadURL
-    console.log(db)
     return db
       .collection('pepes')
       .add({
